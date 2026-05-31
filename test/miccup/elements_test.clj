@@ -13,3 +13,11 @@
 (deftest unknown-tag-throws
   (is (thrown-with-msg? clojure.lang.ExceptionInfo #":html/foo"
         (e/render-element r :foo {} ["x"]))))
+
+(deftest emphasis
+  (is (= "**bold**" (e/render-element r :strong {} ["bold"])))
+  (is (= "**bold**" (e/render-element r :b {} ["bold"])))
+  (is (= "*it*" (e/render-element r :em {} ["it"])))
+  (is (= "*it*" (e/render-element r :i {} ["it"])))
+  (is (= "~~gone~~" (e/render-element r :del {} ["gone"])))
+  (is (= "~~gone~~" (e/render-element r :s {} ["gone"]))))

@@ -25,6 +25,17 @@
 (defmethod render-element :h5 [render _ _ children] (heading render 5 children))
 (defmethod render-element :h6 [render _ _ children] (heading render 6 children))
 
+;; --- 強調 ---
+(defn- wrap [render mark children]
+  (str mark (content render children) mark))
+
+(defmethod render-element :strong [render _ _ children] (wrap render "**" children))
+(defmethod render-element :b      [render _ _ children] (wrap render "**" children))
+(defmethod render-element :em     [render _ _ children] (wrap render "*" children))
+(defmethod render-element :i      [render _ _ children] (wrap render "*" children))
+(defmethod render-element :del    [render _ _ children] (wrap render "~~" children))
+(defmethod render-element :s      [render _ _ children] (wrap render "~~" children))
+
 ;; --- 既定（未知タグ） ---
 (defmethod render-element :default [_ tag _ _]
   (throw (ex-info (str "miccup: unknown tag " tag
