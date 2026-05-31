@@ -21,3 +21,12 @@
   (is (= "*it*" (e/render-element r :i {} ["it"])))
   (is (= "~~gone~~" (e/render-element r :del {} ["gone"])))
   (is (= "~~gone~~" (e/render-element r :s {} ["gone"]))))
+
+(deftest code-inline
+  (is (= "`a*b`" (e/render-element r :code {} ["a*b"])))) ; 内部はエスケープしない
+
+(deftest code-block
+  (is (= "```clojure\n(+ 1 2)\n```"
+         (e/render-element r :pre {:lang "clojure"} ["(+ 1 2)"])))
+  (is (= "```\nplain\n```"
+         (e/render-element r :pre {} ["plain"]))))

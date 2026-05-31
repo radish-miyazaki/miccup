@@ -36,6 +36,21 @@
 (defmethod render-element :del    [render _ _ children] (wrap render "~~" children))
 (defmethod render-element :s      [render _ _ children] (wrap render "~~" children))
 
+;; --- コード（内容はエスケープしない） ---
+(defn- raw-content
+  "子をエスケープせずリテラル文字列として連結する。"
+  [children]
+  (->> (u/flatten-children children)
+       (map str)
+       (apply str)))
+
+(defmethod render-element :code [_ _ _ children]
+  (str "`" (raw-content children) "`"))
+
+(defmethod render-element :pre [_ _ attrs children]
+  (let [lang (or (:lang attrs) "")]
+    (str "```" lang "\n" (raw-content children) "\n```")))
+
 ;; --- 既定（未知タグ） ---
 (defmethod render-element :default [_ tag _ _]
   (throw (ex-info (str "miccup: unknown tag " tag
