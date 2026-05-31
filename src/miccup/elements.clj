@@ -51,6 +51,21 @@
   (let [lang (or (:lang attrs) "")]
     (str "```" lang "\n" (raw-content children) "\n```")))
 
+;; --- リンク / 画像 ---
+(defmethod render-element :a [render _ attrs children]
+  (let [href (:href attrs)]
+    (when-not href
+      (throw (ex-info "miccup: :a requires :href" {:attrs attrs})))
+    (str "[" (content render children) "](" href
+         (when (:title attrs) (str " \"" (:title attrs) "\"")) ")")))
+
+(defmethod render-element :img [_ _ attrs _]
+  (let [src (:src attrs)]
+    (when-not src
+      (throw (ex-info "miccup: :img requires :src" {:attrs attrs})))
+    (str "![" (or (:alt attrs) "") "](" src
+         (when (:title attrs) (str " \"" (:title attrs) "\"")) ")")))
+
 ;; --- 既定（未知タグ） ---
 (defmethod render-element :default [_ tag _ _]
   (throw (ex-info (str "miccup: unknown tag " tag

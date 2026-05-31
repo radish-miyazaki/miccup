@@ -30,3 +30,18 @@
          (e/render-element r :pre {:lang "clojure"} ["(+ 1 2)"])))
   (is (= "```\nplain\n```"
          (e/render-element r :pre {} ["plain"]))))
+
+(deftest links
+  (is (= "[text](http://x)" (e/render-element r :a {:href "http://x"} ["text"])))
+  (is (= "[text](http://x \"t\")"
+         (e/render-element r :a {:href "http://x" :title "t"} ["text"])))
+  (is (thrown-with-msg? clojure.lang.ExceptionInfo #":href"
+        (e/render-element r :a {} ["text"]))))
+
+(deftest images
+  (is (= "![alt](s.png)" (e/render-element r :img {:src "s.png" :alt "alt"} [])))
+  (is (= "![](s.png)" (e/render-element r :img {:src "s.png"} [])))
+  (is (= "![a](s.png \"t\")"
+         (e/render-element r :img {:src "s.png" :alt "a" :title "t"} [])))
+  (is (thrown-with-msg? clojure.lang.ExceptionInfo #":src"
+        (e/render-element r :img {} []))))
