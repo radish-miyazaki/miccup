@@ -66,6 +66,44 @@
     (str "![" (or (:alt attrs) "") "](" src
          (when (:title attrs) (str " \"" (:title attrs) "\"")) ")")))
 
+;; --- リスト ---
+(defn- list-item
+  "1 つの :li を、箇条書き記号より後ろの文字列にレンダリングする
+   （チェックボックス + インライン内容 + ネストしたリスト）。"
+  [render li]
+  (let [[_ attrs children] (u/normalize-element li)
+        checkbox (case (:checked attrs)
+                   true  "[x] "
+                   false "[ ] "
+                   "")
+        flat (u/flatten-children children)
+        nested? (fn [c] (and (vector? c) (#{:ul :ol} (first c))))
+        inline-children (remove nested? flat)
+        nested-lists (filter nested? flat)
+        text (str checkbox (content render inline-children))]
+    (if (seq nested-lists)
+      (str text "\n"
+           (->> nested-lists
+                (map render)
+                (map #(u/indent-lines "  " %))
+                (str/join "\n")))
+      text)))
+
+(defn- render-list [render bullet-fn lis]
+  (->> (u/flatten-children lis)
+       (map-indexed (fn [i li] (str (bullet-fn i) (list-item render li))))
+       (str/join "\n")))
+
+(defmethod render-element :ul [render _ _ children]
+  (render-list render (constantly "- ") children))
+
+(defmethod render-element :ol [render _ _ children]
+  (render-list render (fn [i] (str (inc i) ". ")) children))
+
+;; :ul/:ol の外で単独利用された場合のフォールバック
+(defmethod render-element :li [render _ _ children]
+  (content render children))
+
 ;; --- 既定（未知タグ） ---
 (defmethod render-element :default [_ tag _ _]
   (throw (ex-info (str "miccup: unknown tag " tag

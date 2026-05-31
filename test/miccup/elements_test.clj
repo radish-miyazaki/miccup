@@ -5,6 +5,18 @@
 ;; 隔離テスト用の単純なレンダラ（文字列はそのまま返す）
 (def r identity)
 
+;; ネスト要素を正しく再帰させるための、本物に近いテスト用レンダラ
+(declare rr)
+(defn rr [node]
+  (cond
+    (string? node) node
+    (number? node) (str node)
+    (vector? node) (e/render-element rr (first node)
+                                     (if (map? (second node)) (second node) {})
+                                     (if (map? (second node)) (drop 2 node) (rest node)))
+    (seq? node) (apply str (map rr node))
+    :else (str node)))
+
 (deftest headings
   (is (= "# Hello world" (e/render-element r :h1 {} ["Hello world"])))
   (is (= "## Sub" (e/render-element r :h2 {} ["Sub"])))
@@ -45,3 +57,21 @@
          (e/render-element r :img {:src "s.png" :alt "a" :title "t"} [])))
   (is (thrown-with-msg? clojure.lang.ExceptionInfo #":src"
         (e/render-element r :img {} []))))
+
+(deftest lists-basic
+  (is (= "- a\n- b" (e/render-element r :ul {} [[:li "a"] [:li "b"]])))
+  (is (= "1. a\n2. b" (e/render-element r :ol {} [[:li "a"] [:li "b"]]))))
+
+(deftest lists-task
+  (is (= "- [x] done\n- [ ] todo"
+         (e/render-element r :ul {} [[:li {:checked true} "done"]
+                                     [:li {:checked false} "todo"]]))))
+
+(deftest lists-nested
+  (is (= "- a\n  - a1\n  - a2\n- b"
+         (e/render-element rr :ul {} [[:li "a" [:ul [:li "a1"] [:li "a2"]]]
+                                      [:li "b"]]))))
+
+(deftest lists-seq-children
+  (is (= "- 1\n- 2"
+         (e/render-element rr :ul {} [(list [:li "1"] [:li "2"])]))))

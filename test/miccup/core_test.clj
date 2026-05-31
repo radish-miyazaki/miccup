@@ -21,3 +21,9 @@
 (deftest md-embeds-html
   (is (= "# before <strong>x</strong>"
          (str (m/md [:h1 "before " [:html/strong "x"]])))))
+
+(deftest md-lists
+  (is (= "- りんご\n- みかん"
+         (str (m/md [:ul [:li "りんご"] [:li "みかん"]]))))
+  (is (= "- a\n  - a1\n- b"
+         (str (m/md [:ul [:li "a" [:ul [:li "a1"]]] [:li "b"]])))))
