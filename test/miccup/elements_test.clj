@@ -75,3 +75,13 @@
 (deftest lists-seq-children
   (is (= "- 1\n- 2"
          (e/render-element rr :ul {} [(list [:li "1"] [:li "2"])]))))
+
+(deftest paragraph-and-break
+  (is (= "hello" (e/render-element r :p {} ["hello"])))
+  (is (= "  \n" (e/render-element r :br {} []))))
+
+(deftest blockquote
+  (is (= "> quoted" (e/render-element r :blockquote {} ["quoted"]))))
+
+(deftest horizontal-rule
+  (is (= "---" (e/render-element r :hr {} []))))

@@ -104,6 +104,17 @@
 (defmethod render-element :li [render _ _ children]
   (content render children))
 
+;; --- 段落 / 改行 / 引用 / 水平線 ---
+(defmethod render-element :p [render _ _ children]
+  (content render children))
+
+(defmethod render-element :br [_ _ _ _] "  \n")
+
+(defmethod render-element :hr [_ _ _ _] "---")
+
+(defmethod render-element :blockquote [render _ _ children]
+  (u/indent-lines "> " (content render children)))
+
 ;; --- 既定（未知タグ） ---
 (defmethod render-element :default [_ tag _ _]
   (throw (ex-info (str "miccup: unknown tag " tag
