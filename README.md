@@ -20,14 +20,97 @@ io.github.radish-miyazaki/miccup {:mvn/version "0.1.0"}
 
 (str (m/md [:h1 "Hello world"]))
 ;; => "# Hello world"
-
-(str (m/md [:ul [:li "Apple"] [:li "Orange"]]))
-;; => "- Apple\n- Orange"
 ```
 
 - Plain keyword tags (`[:h1 ...]`) are Markdown elements.
 - `:html/*` tags (`[:html/div ...]`) are embedded as raw HTML (delegated to hiccup).
-- `md` returns a `RawString`; wrap it in `str` to get the final string.
+- `md` accepts one or more forms and returns a `RawString`; wrap it in `str` to get the final string.
+
+`md` is variadic. Multiple top-level forms are joined as blocks separated by a blank line:
+
+```clojure
+(str (m/md [:h1 "Title"] [:p "Body"]))
+;; => "# Title\n\nBody"
+```
+
+### Headings and inline elements
+
+Elements nest freely; inline children are concatenated.
+
+```clojure
+(str (m/md [:h1 "Hello " [:strong "world"]]))
+;; => "# Hello **world**"
+
+(str (m/md [:em "it"]))         ;; => "*it*"      (alias: :i)
+(str (m/md [:strong "bold"]))   ;; => "**bold**"  (alias: :b)
+(str (m/md [:del "gone"]))      ;; => "~~gone~~"  (alias: :s)
+(str (m/md [:code "(+ 1 2)"]))  ;; => "`(+ 1 2)`"
+
+(str (m/md [:a {:href "https://clojure.org" :title "home"} "Clojure"]))
+;; => "[Clojure](https://clojure.org \"home\")"
+
+(str (m/md [:img {:src "logo.png" :alt "Logo"}]))
+;; => "![Logo](logo.png)"
+```
+
+### Lists
+
+```clojure
+(str (m/md [:ul [:li "Apple"] [:li "Orange"]]))
+;; => "- Apple\n- Orange"
+
+(str (m/md [:ol [:li "first"] [:li "second"]]))
+;; => "1. first\n2. second"
+
+;; Nested lists are indented by two spaces
+(str (m/md [:ul [:li "a" [:ul [:li "a1"]]] [:li "b"]]))
+;; => "- a\n  - a1\n- b"
+
+;; Task lists via {:checked ...}
+(str (m/md [:ul [:li {:checked true} "done"] [:li {:checked false} "todo"]]))
+;; => "- [x] done\n- [ ] todo"
+```
+
+### Block elements
+
+```clojure
+(str (m/md [:pre {:lang "clojure"} "(+ 1 2)"]))
+;; => "```clojure\n(+ 1 2)\n```"
+
+(str (m/md [:blockquote "quoted"]))
+;; => "> quoted"
+
+(str (m/md [:hr]))
+;; => "---"
+
+(str (m/md [:table
+            [:thead [:tr [:th "A"] [:th {:align :right} "B"]]]
+            [:tbody [:tr [:td "1"] [:td "2"]]]]))
+;; => "| A | B |\n| --- | ---: |\n| 1 | 2 |"
+```
+
+Table column alignment is set per header cell with `{:align :left | :right | :center}`.
+
+### Dynamic content and escaping
+
+Seqs (e.g. from `for`) are spliced into their parent, `nil` is skipped, numbers are stringified, and text is Markdown-escaped automatically:
+
+```clojure
+(str (m/md (into [:ul] (for [x ["a" "b"]] [:li x]))))
+;; => "- a\n- b"
+
+(str (m/md [:p "a*b_c"]))
+;; => "a\\*b\\_c"
+```
+
+### Embedding raw HTML
+
+`:html/*` tags are rendered as raw HTML (delegated to hiccup) and embedded directly, which Markdown permits:
+
+```clojure
+(str (m/md [:p "see " [:html/sub "x"]]))
+;; => "see <sub>x</sub>"
+```
 
 ## Development
 
