@@ -4,8 +4,8 @@
             [miccup.util :as u]))
 
 (defn- de-namespace
-  "`:html/x` キーワードを `:x` に、miccup の RawString を hiccup の raw 文字列に
-   再帰的に変換し、フォームを hiccup に渡せる形にする。"
+  "Recursively converts `:html/x` keywords to `:x` and miccup RawStrings to
+   hiccup raw strings, so the form can be handed to hiccup."
   [node]
   (cond
     (u/raw? node) (hu/raw-string (str node))
@@ -19,7 +19,7 @@
     :else node))
 
 (defn render-html
-  "`:html/*` 要素を hiccup 経由で生 HTML（RawString）にレンダリングする。"
+  "Renders an `:html/*` element to raw HTML (a RawString) via hiccup."
   [tag attrs children]
   (let [form (de-namespace (into [tag attrs] children))]
     (u/raw-string (str (h/html form)))))

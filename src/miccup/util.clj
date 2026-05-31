@@ -6,7 +6,7 @@
   (toString [_] s))
 
 (defn raw-string
-  "再エスケープ防止のための生文字列ラッパーを返す。"
+  "Returns a raw-string wrapper that prevents re-escaping."
   [s]
   (->RawString (str s)))
 
@@ -15,14 +15,14 @@
 (def ^:private md-escape-chars #{\\ \` \* \_ \[ \]})
 
 (defn escape-text
-  "Markdown の最小限の特殊文字をエスケープする。"
+  "Escapes the minimal set of Markdown special characters."
   [s]
   (->> (str s)
        (mapcat (fn [c] (if (contains? md-escape-chars c) [\\ c] [c])))
        (apply str)))
 
 (defn flatten-children
-  "ネストした seq/list を平坦化し、nil を取り除く（ベクタは要素として保持）。"
+  "Flattens nested seqs/lists and removes nils (vectors are kept as elements)."
   [children]
   (mapcat (fn [c]
             (cond
@@ -32,7 +32,7 @@
           children))
 
 (defn normalize-element
-  "hiccup 風ベクタを [tag attrs children] に分解する。先頭がマップなら属性。"
+  "Splits a hiccup-style vector into [tag attrs children]. A leading map is treated as attrs."
   [v]
   (let [tag (first v)
         [attrs children] (if (map? (second v))
@@ -41,7 +41,7 @@
     [tag attrs (vec children)]))
 
 (defn indent-lines
-  "s の各行に prefix を付ける。"
+  "Prefixes each line of s with prefix."
   [prefix s]
   (->> (str/split s #"\n" -1)
        (map #(str prefix %))

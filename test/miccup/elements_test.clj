@@ -2,10 +2,10 @@
   (:require [clojure.test :refer [deftest is]]
             [miccup.elements :as e]))
 
-;; 隔離テスト用の単純なレンダラ（文字列はそのまま返す）
+;; A simple renderer for isolated tests (returns strings as-is)
 (def r identity)
 
-;; ネスト要素を正しく再帰させるための、本物に近いテスト用レンダラ
+;; A realistic test renderer that recurses correctly into nested elements
 (declare rr)
 (defn rr [node]
   (cond
@@ -35,7 +35,7 @@
   (is (= "~~gone~~" (e/render-element r :s {} ["gone"]))))
 
 (deftest code-inline
-  (is (= "`a*b`" (e/render-element r :code {} ["a*b"])))) ; 内部はエスケープしない
+  (is (= "`a*b`" (e/render-element r :code {} ["a*b"])))) ; content is not escaped
 
 (deftest code-block
   (is (= "```clojure\n(+ 1 2)\n```"

@@ -29,7 +29,7 @@ io.github.radish-miyazaki/miccup {:mvn/version "0.1.0"}
 - `:html/*` tags (`[:html/div ...]`) are embedded as raw HTML (delegated to hiccup).
 - `md` returns a `RawString`; wrap it in `str` to get the final string.
 
-## Development (REPL-driven)
+## Development
 
 Start an nREPL server:
 
@@ -49,22 +49,14 @@ Build a jar:
 clojure -T:build jar
 ```
 
-### REPL-driven development for AI agents (clojure-mcp-light)
+## Contributing
 
-With [clojure-mcp-light](https://github.com/bhauman/clojure-mcp-light), an AI agent
-can evaluate code through nREPL and auto-repair delimiter errors while developing.
-Requires [babashka](https://github.com/babashka/babashka) (1.12.212+) and
-[bbin](https://github.com/babashka/bbin).
+Contributions are welcome!
 
-```bash
-# Delimiter auto-repair hook
-bbin install https://github.com/bhauman/clojure-mcp-light.git --tag v0.2.2
-# nREPL eval tool
-bbin install https://github.com/bhauman/clojure-mcp-light.git --tag v0.2.2 \
-  --as clj-nrepl-eval --main-opts '["-m" "clojure-mcp-light.nrepl-eval"]'
-```
-
-Configure the Claude Code hook in `~/.claude/settings.json` (see spec §7.2).
+1. Fork the repository and create a topic branch.
+2. Make your change together with tests, and run the suite with `clojure -M:test` — all tests must pass.
+3. Follow the existing code style, keep commits focused, and write commit messages in [Conventional Commits](https://www.conventionalcommits.org/) format (in English).
+4. Open a pull request describing your change.
 
 ## Known limitations
 

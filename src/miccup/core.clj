@@ -13,7 +13,7 @@
       (e/render-element render-node tag attrs children))))
 
 (defn render-node
-  "単一ノードを String にレンダリングする。"
+  "Renders a single node to a String."
   [node]
   (cond
     (nil? node) ""
@@ -25,8 +25,8 @@
     :else (u/escape-text (str node))))
 
 (defn md
-  "hiccup 風 Markdown フォームを RawString にレンダリングする。
-   トップレベルの複数フォームはブロックとして空行で連結する。"
+  "Renders hiccup-style Markdown form(s) to a RawString.
+   Multiple top-level forms are joined as blocks separated by a blank line."
   [& forms]
   (u/raw-string
    (str/join "\n\n" (map render-node (u/flatten-children forms)))))

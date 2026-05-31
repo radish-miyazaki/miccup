@@ -3,18 +3,18 @@
             [miccup.util :as u]))
 
 (defmulti render-element
-  "Markdown 要素をレンダリングする。`render` は子ノードを再帰レンダリングする関数。
-   タグキーワードでディスパッチする。"
+  "Renders a Markdown element. `render` recursively renders child nodes.
+   Dispatches on the tag keyword."
   (fn [_render tag _attrs _children] tag))
 
 (defn- content
-  "子をインライン文字列にレンダリングする（`render` 経由でエスケープされる）。"
+  "Renders children to an inline string (escaped via `render`)."
   [render children]
   (->> (u/flatten-children children)
        (map render)
        (apply str)))
 
-;; --- 見出し ---
+;; --- Headings ---
 (defn- heading [render level children]
   (str (apply str (repeat level "#")) " " (content render children)))
 
@@ -25,7 +25,7 @@
 (defmethod render-element :h5 [render _ _ children] (heading render 5 children))
 (defmethod render-element :h6 [render _ _ children] (heading render 6 children))
 
-;; --- 強調 ---
+;; --- Emphasis ---
 (defn- wrap [render mark children]
   (str mark (content render children) mark))
 
@@ -36,9 +36,9 @@
 (defmethod render-element :del    [render _ _ children] (wrap render "~~" children))
 (defmethod render-element :s      [render _ _ children] (wrap render "~~" children))
 
-;; --- コード（内容はエスケープしない） ---
+;; --- Code (content is not escaped) ---
 (defn- raw-content
-  "子をエスケープせずリテラル文字列として連結する。"
+  "Joins children as literal strings without Markdown escaping."
   [children]
   (->> (u/flatten-children children)
        (map str)
@@ -51,7 +51,7 @@
   (let [lang (or (:lang attrs) "")]
     (str "```" lang "\n" (raw-content children) "\n```")))
 
-;; --- リンク / 画像 ---
+;; --- Links / images ---
 (defmethod render-element :a [render _ attrs children]
   (let [href (:href attrs)]
     (when-not href
@@ -66,10 +66,10 @@
     (str "![" (or (:alt attrs) "") "](" src
          (when (:title attrs) (str " \"" (:title attrs) "\"")) ")")))
 
-;; --- リスト ---
+;; --- Lists ---
 (defn- list-item
-  "1 つの :li を、箇条書き記号より後ろの文字列にレンダリングする
-   （チェックボックス + インライン内容 + ネストしたリスト）。"
+  "Renders a single :li into the text after the bullet marker
+   (checkbox + inline content + nested list)."
   [render li]
   (let [[_ attrs children] (u/normalize-element li)
         checkbox (case (:checked attrs)
@@ -100,11 +100,11 @@
 (defmethod render-element :ol [render _ _ children]
   (render-list render (fn [i] (str (inc i) ". ")) children))
 
-;; :ul/:ol の外で単独利用された場合のフォールバック
+;; Fallback for when :li is used standalone outside :ul/:ol
 (defmethod render-element :li [render _ _ children]
   (content render children))
 
-;; --- 段落 / 改行 / 引用 / 水平線 ---
+;; --- Paragraph / break / blockquote / horizontal rule ---
 (defmethod render-element :p [render _ _ children]
   (content render children))
 
@@ -115,7 +115,7 @@
 (defmethod render-element :blockquote [render _ _ children]
   (u/indent-lines "> " (content render children)))
 
-;; --- テーブル ---
+;; --- Table ---
 (defn- cell-text [render cell]
   (let [[_ _ children] (u/normalize-element cell)]
     (content render children)))
@@ -134,7 +134,7 @@
   (some #(when (and (vector? %) (= tag (first %))) %) flat))
 
 (defn- rows-of [section-vec]
-  ;; section-vec = [:thead ... ] / [:tbody ...] → 中の :tr ベクタの並び
+  ;; section-vec = [:thead ...] / [:tbody ...] -> the sequence of inner :tr vectors
   (-> section-vec u/normalize-element (nth 2) u/flatten-children))
 
 (defn- cells-of [tr]
@@ -156,7 +156,7 @@
                        (row-line aligns)]
                       body-lines))))
 
-;; --- 既定（未知タグ） ---
+;; --- Default (unknown tag) ---
 (defmethod render-element :default [_ tag _ _]
   (throw (ex-info (str "miccup: unknown tag " tag
                        "; for raw HTML use :html/" (name tag))
