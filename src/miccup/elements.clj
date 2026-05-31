@@ -115,6 +115,47 @@
 (defmethod render-element :blockquote [render _ _ children]
   (u/indent-lines "> " (content render children)))
 
+;; --- テーブル ---
+(defn- cell-text [render cell]
+  (let [[_ _ children] (u/normalize-element cell)]
+    (content render children)))
+
+(defn- align-marker [align]
+  (case align
+    :left   ":---"
+    :right  "---:"
+    :center ":---:"
+    "---"))
+
+(defn- row-line [cells]
+  (str "| " (str/join " | " cells) " |"))
+
+(defn- section [flat tag]
+  (some #(when (and (vector? %) (= tag (first %))) %) flat))
+
+(defn- rows-of [section-vec]
+  ;; section-vec = [:thead ... ] / [:tbody ...] → 中の :tr ベクタの並び
+  (-> section-vec u/normalize-element (nth 2) u/flatten-children))
+
+(defn- cells-of [tr]
+  (-> tr u/normalize-element (nth 2) u/flatten-children))
+
+(defmethod render-element :table [render _ _ children]
+  (let [flat        (u/flatten-children children)
+        header-row  (first (rows-of (section flat :thead)))
+        header-cells (cells-of header-row)
+        headers     (map #(cell-text render %) header-cells)
+        aligns      (map (fn [th]
+                           (-> th u/normalize-element second :align align-marker))
+                         header-cells)
+        body-rows   (rows-of (section flat :tbody))
+        body-lines  (map (fn [tr] (row-line (map #(cell-text render %) (cells-of tr))))
+                         body-rows)]
+    (str/join "\n"
+              (concat [(row-line headers)
+                       (row-line aligns)]
+                      body-lines))))
+
 ;; --- 既定（未知タグ） ---
 (defmethod render-element :default [_ tag _ _]
   (throw (ex-info (str "miccup: unknown tag " tag

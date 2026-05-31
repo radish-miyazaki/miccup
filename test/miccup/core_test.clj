@@ -27,3 +27,8 @@
          (str (m/md [:ul [:li "りんご"] [:li "みかん"]]))))
   (is (= "- a\n  - a1\n- b"
          (str (m/md [:ul [:li "a" [:ul [:li "a1"]]] [:li "b"]])))))
+
+(deftest md-table
+  (is (= "| A |\n| --- |\n| 1 |"
+         (str (m/md [:table [:thead [:tr [:th "A"]]]
+                            [:tbody [:tr [:td "1"]]]])))))

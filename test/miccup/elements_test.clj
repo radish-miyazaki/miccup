@@ -85,3 +85,14 @@
 
 (deftest horizontal-rule
   (is (= "---" (e/render-element r :hr {} []))))
+
+(deftest table-basic
+  (is (= (str "| A | B |\n"
+              "| --- | ---: |\n"
+              "| 1 | 2 |\n"
+              "| 3 | 4 |")
+         (e/render-element
+          r :table {}
+          [[:thead [:tr [:th "A"] [:th {:align :right} "B"]]]
+           [:tbody [:tr [:td "1"] [:td "2"]]
+                   [:tr [:td "3"] [:td "4"]]]]))))
