@@ -6,4 +6,8 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
-- 初期スキャフォールド。
+- `miccup.core/md`：Hiccup 風データ構造から Markdown を生成する公開 API。
+- 対応要素：見出し（h1–h6）、段落・改行、強調（strong/em/del と別名）、
+  インライン/ブロックコード、リンク・画像、リスト（ネスト・タスク）、
+  引用、水平線、テーブル（列揃え）。
+- `:html/*` タグによる生 HTML 埋め込み（hiccup へ委譲）。
