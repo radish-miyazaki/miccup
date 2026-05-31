@@ -1,0 +1,11 @@
+/target
+.cpcache/
+.nrepl-port
+.clojure-mcp-light-hooks.log
+.clj-kondo/
+.lsp/
+
+# AI agent local config（コミットしない）
+CLAUDE.md
+.claude/
+docs/
