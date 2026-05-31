@@ -1,5 +1,5 @@
 (ns miccup.util-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [clojure.test :refer [deftest is]]
             [miccup.util :as u]))
 
 (deftest raw-string-test
