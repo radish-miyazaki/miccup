@@ -23,9 +23,5 @@
   (is (= [:a {:href "u"} ["x"]] (u/normalize-element [:a {:href "u"} "x"])))
   (is (= [:h1 {} ["x"]] (u/normalize-element [:h1 "x"]))))
 
-(deftest block-tag?-test
-  (is (true? (u/block-tag? :h1)))
-  (is (false? (u/block-tag? :strong))))
-
 (deftest indent-lines-test
   (is (= "> a\n> b" (u/indent-lines "> " "a\nb"))))

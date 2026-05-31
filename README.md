@@ -66,6 +66,12 @@ bbin install https://github.com/bhauman/clojure-mcp-light.git --tag v0.2.2 \
 
 Configure the Claude Code hook in `~/.claude/settings.json` (see spec §7.2).
 
+## Known limitations
+
+- `:table` expects both a `:thead` and a `:tbody`; omitting `:thead` produces malformed output rather than an error.
+- `:title` and `:href`/`:src` attribute values are emitted as-is; a literal `"` inside a `:title` is not escaped.
+- Nested ordered lists are indented with two spaces (not configurable).
+
 ## License
 
 EPL-1.0

@@ -31,11 +31,6 @@
               :else [c]))
           children))
 
-(def block-tags
-  #{:h1 :h2 :h3 :h4 :h5 :h6 :p :ul :ol :blockquote :pre :hr :table})
-
-(defn block-tag? [tag] (contains? block-tags tag))
-
 (defn normalize-element
   "hiccup 風ベクタを [tag attrs children] に分解する。先頭がマップなら属性。"
   [v]

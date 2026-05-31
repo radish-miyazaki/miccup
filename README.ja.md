@@ -66,6 +66,12 @@ bbin install https://github.com/bhauman/clojure-mcp-light.git --tag v0.2.2 \
 
 Claude Code のフックは `~/.claude/settings.json` に設定する（仕様書 7.2 を参照）。
 
+## 既知の制限
+
+- `:table` は `:thead` と `:tbody` の両方を前提とする。`:thead` を省略するとエラーではなく不正な出力になる。
+- `:title` や `:href`/`:src` の属性値はそのまま出力される。`:title` 内のリテラルな `"` はエスケープされない。
+- ネストした順序付きリストのインデントは半角スペース2つ（変更不可）。
+
 ## License
 
 EPL-1.0
