@@ -1,5 +1,7 @@
 # miccup
 
+[![Clojars Project](https://img.shields.io/clojars/v/io.github.radish-miyazaki/miccup.svg)](https://clojars.org/io.github.radish-miyazaki/miccup)
+
 [English](README.md) | [日本語](README.ja.md)
 
 Generate **Markdown** from Hiccup-style Clojure data structures.
@@ -130,6 +132,21 @@ Build a jar:
 
 ```bash
 clojure -T:build jar
+```
+
+Install into the local Maven repository (`~/.m2`):
+
+```bash
+clojure -T:build install
+```
+
+## Release
+
+Deploy to [Clojars](https://clojars.org/) (requires a Clojars deploy token):
+
+```bash
+clojure -T:build jar
+CLOJARS_USERNAME=<username> CLOJARS_PASSWORD=<deploy-token> clojure -X:deploy
 ```
 
 ## Contributing

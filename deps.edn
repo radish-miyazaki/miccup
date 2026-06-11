@@ -15,4 +15,12 @@
   :build {:deps {io.github.clojure/tools.build
                  {:git/tag "v0.10.14"
                   :git/sha "9d08b2a1c8a81d8d147d71d13710a34d7d07d7c7"}}
-          :ns-default build}}}
+          :ns-default build}
+  ;; deps-deploy must NOT share a classpath with tools.build: tools.build's
+  ;; newer tools.deps drops maven-core, which deps-deploy requires.
+  :deploy {:replace-deps {slipset/deps-deploy {:mvn/version "0.2.2"}}
+           :exec-fn deps-deploy.deps-deploy/deploy
+           :exec-args {:installer :remote
+                       :sign-releases? false
+                       :artifact "target/miccup-0.1.0.jar"
+                       :pom-file "target/classes/META-INF/maven/io.github.radish-miyazaki/miccup/pom.xml"}}}}

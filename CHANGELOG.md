@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-06-11
+
 ### Added
 - `miccup.core/md`：Hiccup 風データ構造から Markdown を生成する公開 API。
 - 対応要素：見出し（h1–h6）、段落・改行、強調（strong/em/del と別名）、

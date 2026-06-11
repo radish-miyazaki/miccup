@@ -1,5 +1,7 @@
 # miccup
 
+[![Clojars Project](https://img.shields.io/clojars/v/io.github.radish-miyazaki/miccup.svg)](https://clojars.org/io.github.radish-miyazaki/miccup)
+
 [English](README.md) | [日本語](README.ja.md)
 
 Hiccup 風の Clojure データ構造から **Markdown** を生成するライブラリ。
@@ -130,6 +132,21 @@ jar ビルド:
 
 ```bash
 clojure -T:build jar
+```
+
+ローカル Maven リポジトリ（`~/.m2`）へのインストール:
+
+```bash
+clojure -T:build install
+```
+
+## リリース
+
+[Clojars](https://clojars.org/) へのデプロイ（Clojars のデプロイトークンが必要）:
+
+```bash
+clojure -T:build jar
+CLOJARS_USERNAME=<username> CLOJARS_PASSWORD=<deploy-token> clojure -X:deploy
 ```
 
 ## コントリビュート
