@@ -140,15 +140,6 @@ clojure -T:build jar
 clojure -T:build install
 ```
 
-## リリース
-
-[Clojars](https://clojars.org/) へのデプロイ（Clojars のデプロイトークンが必要）:
-
-```bash
-clojure -T:build jar
-CLOJARS_USERNAME=<username> CLOJARS_PASSWORD=<deploy-token> clojure -X:deploy
-```
-
 ## コントリビュート
 
 コントリビュートを歓迎します。

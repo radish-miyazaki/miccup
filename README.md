@@ -140,15 +140,6 @@ Install into the local Maven repository (`~/.m2`):
 clojure -T:build install
 ```
 
-## Release
-
-Deploy to [Clojars](https://clojars.org/) (requires a Clojars deploy token):
-
-```bash
-clojure -T:build jar
-CLOJARS_USERNAME=<username> CLOJARS_PASSWORD=<deploy-token> clojure -X:deploy
-```
-
 ## Contributing
 
 Contributions are welcome!
